@@ -13,6 +13,10 @@ Antille is a native island engine, a standalone creator app, and a command-line 
 
 The surface stays black to join the camera cutout. It expands for useful content, stretches toward dragged items, and ripples when they land. On a notchless screen it sits at the top center. Reduce Motion removes deformation and animated geometry changes.
 
+## Install
+
+Download the Apple Silicon preview from [Releases](https://github.com/Upsidedly/antille/releases) and move `Antille.app` to `/Applications`. Preview bundles are locally signed development builds, not Developer ID signed or notarized. The Swift package can also be built from source below.
+
 ## Use the creator
 
 Open Antille from the menu bar to configure a saved profile: size, curves, activation, display, content order, and custom blocks. **Apply** saves atomically; **Share** imports, exports, or recovers the previous save. Hover or click the island to expand it, pin it to keep it open, and press Escape to collapse it. A consumer can require a click: hover then gives only a small invitation, and a clicked surface stays open until an outside click or Escape.
