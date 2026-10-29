@@ -28,7 +28,7 @@ import Antille
                 if model.settings {
                     Form {UtilitiesSettingsView(utilities:model.utilities)}.formStyle(.grouped).frame(width:620,height:540)
                 } else {
-                    IslandDefaultExpanded(store:model.store,icon:{AnyView(UtilityCompactIcon(activity:$0,utilities:model.utilities))},content:{AnyView(UtilityIslandContent(activityID:$0.activityID,utilities:model.utilities))})
+                    IslandDefaultExpanded(store:model.store,icon:{AnyView(UtilityCompactIcon(activity:$0,utilities:model.utilities))},showsHeader:{$0.activityID != "music"},content:{AnyView(UtilityIslandContent(activityID:$0.activityID,utilities:model.utilities))})
                         .frame(width:model.width).background(.black,in:RoundedRectangle(cornerRadius:24)).preferredColorScheme(.dark)
                 }
                 HStack {
@@ -42,6 +42,8 @@ import Antille
             CommandMenu("Fixture") {
                 Button("Narrow island") {model.width=300}
                 Button("Standard island") {model.width=390}
+                Button("Paused playback sample") {model.utilities.music.snapshot?.isPlaying=false}
+                Button("Long title sample") {model.utilities.music.snapshot?.title="A very long sample song title that needs room to wrap without hiding the playback controls";model.utilities.music.snapshot?.artist="Sample artist with a long name"}
                 Button("Denied playback sample") {model.utilities.music.controlsAllowed=false;model.utilities.music.error="Allow Antille to control Spotify in macOS Automation settings."}
                 Button("Closed player sample") {model.utilities.music.snapshot=nil;model.utilities.music.running=false;model.utilities.music.error=nil}
             }

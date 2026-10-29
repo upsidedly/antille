@@ -23,7 +23,7 @@ import SwiftUI
             let icon:(IslandActivity)->AnyView={activity in
                 activity.producerID==UtilityController.producer ? AnyView(UtilityCompactIcon(activity:activity,utilities:utilities)):AnyView(IslandActivityIcon(activity))
             }
-            let controller=IslandController(store:store,compact:icon,expanded:{AnyView(IslandDefaultExpanded(store:store,icon:icon,content:{activity in
+            let controller=IslandController(store:store,compact:icon,expanded:{AnyView(IslandDefaultExpanded(store:store,icon:icon,showsHeader:{$0.producerID != UtilityController.producer || $0.activityID != "music"},content:{activity in
                 activity.producerID==UtilityController.producer ? AnyView(UtilityIslandContent(activityID:activity.activityID,utilities:utilities)):nil
             }))})
             defer {controller.close()}

@@ -184,7 +184,8 @@ public struct IslandDefaultExpanded: View {
     public let store: IslandStore
     private let icon:((IslandActivity)->AnyView)?
     private let content:((IslandActivity)->AnyView?)?
-    public init(store: IslandStore,icon:((IslandActivity)->AnyView)?=nil,content:((IslandActivity)->AnyView?)?=nil) { self.store=store;self.icon=icon;self.content=content }
+    private let showsHeader:(IslandActivity)->Bool
+    public init(store: IslandStore,icon:((IslandActivity)->AnyView)?=nil,showsHeader:@escaping (IslandActivity)->Bool={_ in true},content:((IslandActivity)->AnyView?)?=nil) { self.store=store;self.icon=icon;self.showsHeader=showsHeader;self.content=content }
     @State private var fields:[String:[String:String]]=[:]
     @State private var focused:IslandActivity?
     @State private var selectorOrder:[String]=[]
@@ -199,7 +200,7 @@ public struct IslandDefaultExpanded: View {
                 if store.visibleActivities.count>1 {
                     activitySelector(selected:activity)
                 }
-                HStack(alignment:.top,spacing:12) {
+                if showsHeader(activity) {HStack(alignment:.top,spacing:12) {
                     iconView(activity).frame(width:activity.actionsInMenu==true ? 28:45,height:activity.actionsInMenu==true ? 34:50)
                         .modifier(ActivityDragRegion(store:store,activity:activity,regionID:"selected"))
                     VStack(alignment:.leading,spacing:4) {
@@ -223,7 +224,7 @@ public struct IslandDefaultExpanded: View {
                             .foregroundStyle(Color(islandHex:activity.accentHex))
                             .accessibilityLabel(activity.attention == .error ? "Failed" : activity.attention == .information ? "Information":"Needs attention")
                     }
-                }
+                }}
                 if let nativeContent=content?(activity) {nativeContent}
                 else {ForEach(store.profile.componentOrder,id:\.self) { component in
                     switch component {

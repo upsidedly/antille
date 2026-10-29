@@ -66,31 +66,39 @@ struct MusicUtilityView:View {
     var fixture=false
     @Environment(\.islandContentActive) private var contentActive
     var body:some View {
-        VStack(alignment:.leading,spacing:14) {
-            HStack(alignment:.center,spacing:12) {
+        VStack(alignment:.leading,spacing:16) {
+            HStack(alignment:.center,spacing:16) {
                 Group {
                     if let image=music.artwork ?? music.playerIcon {Image(nsImage:image).resizable().scaledToFit()}
                     else {Image(systemName:"music.note").resizable().scaledToFit().padding(8)}
-                }.frame(width:44,height:44).clipShape(RoundedRectangle(cornerRadius:7)).accessibilityHidden(true)
-                VStack(alignment:.leading,spacing:4) {
+                }.frame(width:72,height:72).clipShape(RoundedRectangle(cornerRadius:10)).accessibilityHidden(true)
+                VStack(alignment:.leading,spacing:5) {
                     Text(music.snapshot?.title.isEmpty==false ? music.snapshot?.title ?? "Now playing":music.running ? "Waiting for playback":"\(music.player.name) is closed")
-                        .font(.system(size:13,weight:.semibold)).lineLimit(2).textSelection(.enabled)
-                    if let artist=music.snapshot?.artist,!artist.isEmpty {Text(artist).font(.system(size:11)).foregroundStyle(.secondary).lineLimit(1)}
-                    Text(fixture ? "Sample playback · no live player":music.snapshot.map{$0.playbackState.rawValue.capitalized+" in "+music.player.name} ?? music.player.name)
-                        .font(.system(size:10)).foregroundStyle(.secondary)
+                        .font(.system(size:17,weight:.semibold)).lineLimit(2).textSelection(.enabled)
+                    if let artist=music.snapshot?.artist,!artist.isEmpty {Text(artist).font(.system(size:12)).foregroundStyle(.secondary).lineLimit(1)}
+                    Text(fixture ? "Sample playback":music.player.name)
+                        .font(.system(size:10,weight:.medium)).foregroundStyle(.secondary).tracking(0.35)
                 }.frame(maxWidth:.infinity,alignment:.leading)
+                if music.running {
+                    Button {music.openPlayer()} label:{Image(systemName:"arrow.up.forward").font(.system(size:11,weight:.medium)).frame(width:28,height:28).background(.primary.opacity(0.07),in:Circle())}
+                        .buttonStyle(.plain).help("Open \(music.player.name)").accessibilityLabel("Open \(music.player.name)")
+                }
             }
             if let track=music.snapshot,let duration=track.duration,track.position != nil {
                 TimelineView(.animation(minimumInterval:1,paused:!track.isPlaying || !contentActive)) {context in
                     let position=track.position(at:context.date) ?? 0
-                    VStack(spacing:4) {
-                        ProgressView(value:min(1,max(0,position/duration)))
-                        HStack {Text(IslandCountdown.clock(position));Spacer();Text(IslandCountdown.clock(duration))}.font(.system(size:9)).monospacedDigit().foregroundStyle(.secondary)
+                    VStack(spacing:7) {
+                        GeometryReader {geometry in
+                            Capsule().fill(.primary.opacity(0.12))
+                                .overlay(alignment:.leading) {Capsule().fill(.primary.opacity(0.82)).frame(width:geometry.size.width*min(1,max(0,position/duration)))}
+                        }.frame(height:3).accessibilityElement(children:.ignore).accessibilityLabel("Playback progress")
+                            .accessibilityValue(IslandCountdown.clock(position)+" of "+IslandCountdown.clock(duration))
+                        HStack {Text(IslandCountdown.clock(position));Spacer();Text(IslandCountdown.clock(duration))}.font(.system(size:10)).monospacedDigit().foregroundStyle(.secondary)
                     }
                 }
             }
             if music.running {
-                HStack(spacing:16) {
+                HStack(spacing:22) {
                     Spacer()
                     transport("Previous track",symbol:"backward.end.fill",command:.previous)
                     transport(music.snapshot?.isPlaying==true ? "Pause":"Play",symbol:music.snapshot?.isPlaying==true ? "pause.fill":"play.fill",command:.toggle)
@@ -109,7 +117,12 @@ struct MusicUtilityView:View {
         }.frame(maxWidth:.infinity,alignment:.leading)
     }
     private func transport(_ title:String,symbol:String,command:MusicTransport)->some View {
-        Button {music.perform(command)} label:{Image(systemName:symbol).font(.system(size:command == .toggle ? 20:14)).frame(width:32,height:32)}
+        Button {music.perform(command)} label:{
+            Image(systemName:symbol).font(.system(size:command == .toggle ? 19:16,weight:.semibold))
+                .foregroundStyle(command == .toggle ? Color(nsColor:.controlBackgroundColor):Color.primary)
+                .frame(width:command == .toggle ? 44:36,height:44)
+                .background {if command == .toggle {Circle().fill(.primary)}}
+        }
             .disabled(music.busy).help(title).accessibilityLabel(title+" in "+music.player.name)
     }
 }

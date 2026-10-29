@@ -146,7 +146,7 @@ import Observation
             result.append(IslandActivity(producerID:Self.producer,activityID:"music",generation:generation,revision:revision,
                 title:"Now playing",detail:track?.artist ?? "",state:music.running ? (track?.playbackState.rawValue ?? "waiting for playback"):"player closed",priority:30,symbol:"music.note",accentHex:"C9C9D4",
                 actions:[IslandAction(id:"previous",title:"Previous track"),IslandAction(id:"toggle",title:track?.isPlaying==true ? "Pause":"Play"),IslandAction(id:"next",title:"Next track"),IslandAction(id:"open-player",title:"Open \(music.player.name)")],
-                updatedAt:date,allowsNotifications:false,actionsInMenu:true,requiresClickToExpand:true,preferredExpandedHeight:440,showsInCompact:music.running && track?.isPlaying==true))
+                updatedAt:date,allowsNotifications:false,actionsInMenu:true,requiresClickToExpand:true,preferredExpandedHeight:320,showsInCompact:music.running && track?.isPlaying==true))
         }
         let remaining=timer.remaining(at:date),running=timer.phase == .running,done=timer.phase == .finished
         let actionIDs:[(String,String)]=switch timer.phase {case .idle:[("start","Start timer")];case .running:[("pause","Pause"),("cancel","Cancel")];case .paused:[("resume","Resume"),("cancel","Cancel")];case .finished:[("restart","Start again"),("dismiss","Dismiss")]}

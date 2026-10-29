@@ -68,7 +68,7 @@ final class HostModel {
                 }
                 controller=IslandController(store:store,compact:icon,expanded:{ [weak self] in
                     guard let self else{return AnyView(EmptyView())}
-                    return AnyView(IslandDefaultExpanded(store:self.store,icon:icon,content:{activity in
+                    return AnyView(IslandDefaultExpanded(store:self.store,icon:icon,showsHeader:{$0.producerID != UtilityController.producer || $0.activityID != "music"},content:{activity in
                         activity.producerID==UtilityController.producer ? AnyView(UtilityIslandContent(activityID:activity.activityID,utilities:utilities)):nil
                     }))
                 });controller?.show()
