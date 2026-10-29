@@ -1,0 +1,16 @@
+.build/
+.build-local/
+.DS_Store
+dist/
+.swiftpm/
+__pycache__/
+*.pyc
+.env
+.env.*
+*.log
+
+# Local task records and raw reference investigations are not source releases.
+PLAN.md
+PROGRESS.md
+VERIFICATION.md
+docs/research/
